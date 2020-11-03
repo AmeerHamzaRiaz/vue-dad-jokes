@@ -1,3 +1,4 @@
+/* eslint-disable */
 <template>
   <div v-if="isLoading"><p class="text-center">Please wait ...</p></div>
 
@@ -7,10 +8,10 @@
         {{ joke.joke }}
       </v-card-text>
       <v-card-actions>
-        <nuxt-link :to="'/'+joke.id">
+        <nuxt-link class="link" :to="'/'+joke.id">
         <v-btn color="deep-purple lighten-2" text> View </v-btn>
         </nuxt-link>
-        <v-btn color="pink accent-3" text> Save </v-btn>
+        <v-btn color="pink accent-3" text @click="addJoke(joke.id)"> Save </v-btn>
       </v-card-actions>
     </v-card>
   </div>
@@ -18,6 +19,8 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
+
 export default {
   name: 'JokesList',
   props: {
@@ -29,6 +32,11 @@ export default {
       required: true,
       type: Boolean
     }
+  },
+  methods: {
+    ...mapMutations({
+      addJoke: 'jokes/addJoke'
+    })
   }
 }
 </script>
@@ -36,5 +44,8 @@ export default {
 <style scoped>
 .mt-20 {
   margin-bottom: 20px;
+}
+.link {
+  text-decoration: none;
 }
 </style>

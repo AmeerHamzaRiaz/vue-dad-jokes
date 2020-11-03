@@ -1,7 +1,8 @@
+/* eslint-disable */
 <template>
 <div>
   <h1>{{ joke }}</h1>
-  <nuxt-link to="/">
+  <nuxt-link to="/" class="link">
   <v-btn>Go back</v-btn>
   </nuxt-link>
 </div>
@@ -33,3 +34,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.link {
+  text-decoration: none;
+}
+</style>

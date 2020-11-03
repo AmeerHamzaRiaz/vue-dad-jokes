@@ -1,3 +1,4 @@
+/* eslint-disable */
 <template>
   <v-row justify="center" align="center">
     <v-col cols="6" sm="8" md="6">
@@ -12,24 +13,24 @@
     </v-col>
 
     <v-col cols="6" sm="8" md="6">
-      <v-btn large color="primary" @click="fetchJokes"> Search </v-btn>
+      <v-btn large color="primary" @click="onSearch"> Search </v-btn>
     </v-col>
 
     <v-col cols="12" sm="8" md="6">
-      <h1 class="text-center">DAD JOKES</h1>
+      <h2 class="text-center">Search Results</h2>
       <JokesList :data="jokes" :isLoading="isLoading"> </JokesList>
       <v-pagination
         v-show="totalPages > 1"
-        v-model="page"
+        :value="page"
         :length="totalPages"
-        @input="fetchJokes"
+        @input="onPaginate"
       ></v-pagination>
     </v-col>
   </v-row>
 </template>
 
 <script>
-import { searchJokes } from '../api/jokesAPI'
+import { mapGetters, mapActions } from 'vuex'
 import JokesList from '~/components/JokesList'
 
 export default {
@@ -38,34 +39,32 @@ export default {
   },
   data () {
     return {
-      jokes: [],
-      isLoading: true,
-      searchText: '',
-      page: 1,
-      totalPages: 1
+      searchText: ''
     }
   },
   created () {
-    this.fetchJokes()
+    const payload = { page: this.page, term: this.searchText }
+    this.fetchJokes(payload)
   },
   methods: {
-    async fetchJokes () {
-      try {
-        const res = await searchJokes({ term: this.searchText, page: this.page })
-        this.jokes = [...res.data.results]
-        this.isLoading = false
-        this.totalPages = res.data.total_pages
-      } catch (error) {
-        this.isLoading = false
-        console.error(error)
-      }
+    ...mapActions({
+      fetchJokes: 'jokes/getJokes'
+    }),
+    onSearch () {
+      const payload = { page: 1, term: this.searchText }
+      this.fetchJokes(payload)
     },
-    searchJokes () {
-      this.totalPages = 1
-      this.page = 1
-      this.fetchJokes()
+    onPaginate (pageNum) {
+      const payload = { page: pageNum, term: this.searchText }
+      this.fetchJokes(payload)
     }
-  }
+  },
+  computed: mapGetters({
+    isLoading: 'jokes/getLoading',
+    jokes: 'jokes/getJokes',
+    page: 'jokes/getPage',
+    totalPages: 'jokes/getTotalPages'
+  })
 }
 </script>
 
